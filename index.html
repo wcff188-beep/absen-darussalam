@@ -7,88 +7,203 @@
 
     <style>
         :root {
-            --hijau-tua: #1b5e20;
-            --hijau-cerah: #2e7d32;
+            --primary-dark: #0a3622;
+            --primary-main: #198754;
+            --primary-light: #d1e7dd;
+            --bg-color: #f4f7f6;
+            --text-main: #2b3035;
+            --text-muted: #6c757d;
         }
+
         body { 
-            font-family: 'Segoe UI', sans-serif; 
-            margin: 0; padding: 0; 
-            padding-bottom: 80px; 
-            background-image: url('209206-clean.png');
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            padding-bottom: 85px; 
+            background-color: var(--bg-color);
+            background-image: linear-gradient(rgba(10, 54, 34, 0.45), rgba(10, 54, 34, 0.65)), url('209206-clean.png');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             background-repeat: no-repeat;
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
         }
         
+        /* Header Lebih Rapat & Elegan */
         .header {
-            background: rgba(255, 255, 255, 0.9);
-            color: var(--hijau-tua); 
-            padding: 20px 15px; 
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            color: var(--primary-dark); 
+            padding: 12px 16px; 
             text-align: center;
-            border-bottom-left-radius: 30px; 
-            border-bottom-right-radius: 30px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border-bottom-left-radius: 20px; 
+            border-bottom-right-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             display: flex; 
             align-items: center; 
             justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .header-text { flex: 1; }
-        .header h1 { margin: 0; font-size: 20px; }
-        .header p { margin: 5px 0 0; font-size: 12px; opacity: 0.8; }
+        .header-text { flex: 1; padding: 0 8px; }
+        .header h1 { margin: 0; font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
+        .header p { margin: 2px 0 0; font-size: 11px; font-weight: 600; color: var(--primary-main); }
         
         .logo-header {
-            width: 45px; height: 45px;
+            width: 38px; height: 38px;
             object-fit: cover;
             border-radius: 50%;
-            border: 2px solid var(--hijau-cerah);
+            border: 2px solid var(--primary-main);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        .container { padding: 20px; }
+        /* Container & Card */
+        .container { max-width: 480px; margin: 0 auto; padding: 14px 14px; }
+        
         .card {
-            background: rgba(255, 255, 255, 0.95); 
-            border-radius: 20px; padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.96); 
+            backdrop-filter: blur(8px);
+            border-radius: 16px; 
+            padding: 18px 16px;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08); 
+            margin-bottom: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
         }
 
-        .bottom-nav {
-            position: fixed; bottom: 0; width: 100%; background: white;
-            display: flex; border-top: 1px solid #eee; height: 70px;
-            z-index: 1000;
+        .card h3 {
+            margin-top: 0;
+            margin-bottom: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
+
+        /* Navigasi Bawah */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0; 
+            max-width: 480px; margin: 0 auto;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(12px);
+            display: flex; 
+            border-top: 1px solid rgba(0, 0, 0, 0.06); 
+            height: 65px;
+            z-index: 1000;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
+        }
+        
         .nav-item {
             flex: 1; display: flex; flex-direction: column;
             align-items: center; justify-content: center;
-            color: #888; text-decoration: none; font-size: 12px;
-            background: none; border: none; font-weight: bold;
+            color: var(--text-muted); text-decoration: none; font-size: 11px;
+            background: none; border: none; font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
         }
-        .nav-item.active { color: var(--hijau-cerah); }
-        .nav-item span { font-size: 24px; margin-bottom: 4px; }
+        .nav-item.active { 
+            color: var(--primary-main); 
+        }
+        .nav-item span { 
+            font-size: 20px; 
+            margin-bottom: 2px;
+            transition: transform 0.2s ease;
+        }
+        .nav-item.active span {
+            transform: scale(1.1);
+        }
 
-        .page { display: none; }
+        .page { display: none; animation: fadeIn 0.25s ease-in-out; }
         .page.active { display: block; }
 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Formulir */
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+
         input, select {
-            width: 100%; padding: 14px; margin-bottom: 20px;
-            border: 1px solid #ddd; border-radius: 12px; font-size: 16px;
+            width: 100%; 
+            padding: 12px 14px; 
+            margin-bottom: 14px;
+            border: 1.5px solid #e0e0e0; 
+            border-radius: 10px; 
+            font-size: 14px;
             box-sizing: border-box;
+            background-color: #fafafa;
+            color: var(--text-main);
+            transition: all 0.2s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-main);
+            background-color: #fff;
+            box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.12);
         }
         
         .btn-submit {
-            background: var(--hijau-cerah); color: white; width: 100%;
-            padding: 16px; border: none; border-radius: 12px;
-            font-size: 16px; font-weight: bold;
+            background: linear-gradient(135deg, var(--primary-main), var(--primary-dark)); 
+            color: white; 
+            width: 100%;
+            padding: 14px; 
+            border: none; 
+            border-radius: 10px;
+            font-size: 14px; 
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(25, 135, 84, 0.3);
+            transition: all 0.2s ease;
         }
+
+        .btn-submit:active { transform: scale(0.98); }
         
+        /* QRIS & Tombol WhatsApp */
         .qris-container { text-align: center; }
-        .qris-img { width: 100%; max-width: 280px; border-radius: 15px; }
+        .qris-img { 
+            width: 100%; 
+            max-width: 210px; 
+            border-radius: 14px; 
+            border: 1px solid #eee;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+            margin: 8px 0;
+        }
+
+        .qris-container p {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin: 12px 0;
+        }
         
         .btn-wa {
-            background: #25D366; color: white; width: 100%;
-            padding: 16px; border: none; border-radius: 12px;
-            font-size: 16px; font-weight: bold; text-decoration: none;
-            display: block; box-sizing: border-box; margin-top: 15px; text-align: center;
+            background: linear-gradient(135deg, #25D366, #1ebe57); 
+            color: white; 
+            width: 100%;
+            padding: 13px; 
+            border: none; 
+            border-radius: 10px;
+            font-size: 14px; 
+            font-weight: 600; 
+            text-decoration: none;
+            display: block; 
+            box-sizing: border-box; 
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+            transition: all 0.2s ease;
         }
+
+        .btn-wa:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
@@ -109,12 +224,15 @@
                 <h3>📝 Absensi Jama'ah</h3>
                 <form id="formAbsen">
                     <label>Nama Lengkap</label>
-                    <input type="text" id="nama" required>
-                    <label>Tujuan</label>
+                    <input type="text" id="nama" placeholder="Masukkan nama lengkap" required>
+                    
+                    <label>Tujuan Kehadiran</label>
                     <select id="tujuan" required>
+                        <option value="" disabled selected>Pilih tujuan...</option>
                         <option>Sholat Berjamaah</option>
                         <option>Kajian Rutin</option>
                     </select>
+                    
                     <button type="submit" class="btn-submit">Kirim Kehadiran</button>
                 </form>
             </div>
@@ -125,8 +243,8 @@
             <div class="card qris-container">
                 <h3>🕌 Infaq & Sedekah</h3>
                 <img src="IMG_20260719_225515_701.png" alt="QRIS" class="qris-img">
-                <hr style="margin: 20px 0;">
-                <p>Sudah Berinfaq? Kirim bukti transaksi Anda:</p>
+                <hr style="border: none; border-top: 1px solid #eee; margin: 15px 0;">
+                <p>Sudah berinfaq? Konfirmasikan transaksi Anda:</p>
                 <a href="https://wa.me/62895637310335?text=Assalamualaikum,%20saya%20ingin%20mengirimkan%20bukti%20transaksi%20infaq." class="btn-wa">
                     📱 Kirim Bukti Transaksi
                 </a>
@@ -135,8 +253,12 @@
     </div>
 
     <div class="bottom-nav">
-        <button class="nav-item active" id="nav-absen" onclick="bukaTab('absen')"><span>📝</span>Absen</button>
-        <button class="nav-item" id="nav-qris" onclick="bukaTab('qris')"><span>💰</span>Infaq QRIS</button>
+        <button class="nav-item active" id="nav-absen" onclick="bukaTab('absen')">
+            <span>📝</span>Absen
+        </button>
+        <button class="nav-item" id="nav-qris" onclick="bukaTab('qris')">
+            <span>💰</span>Infaq QRIS
+        </button>
     </div>
 
     <script>

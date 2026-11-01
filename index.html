@@ -2,176 +2,317 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Web Masjid Darussalam</title>
-
-    <meta property="og:title" content="Absensi Masjid Darussalam">
-    <meta property="og:description" content="Silakan isi daftar hadir jamaah Masjid Darussalam di sini.">
-    <meta property="og:image" content="https://cdn-icons-png.flaticon.com/512/2311/2311911.png">
-    <meta property="og:type" content="website">
-    
-    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2311/2311911.png" type="image/x-icon">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display Masjid Profesional</title>
+    <!-- Import Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* CSS: Desain agar terlihat seperti aplikasi HP */
         :root {
-            --hijau-tua: #1b5e20;
-            --hijau-cerah: #2e7d32;
-            --putih: #ffffff;
-            --abu-bg: #f5f5f5;
+            --primary-gold: #fbbf24;
+            --glass-bg: rgba(15, 23, 42, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.15);
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            font-family: 'Segoe UI', sans-serif; 
-            margin: 0; padding: 0; 
-            background-color: var(--abu-bg); 
-            padding-bottom: 80px; 
+            font-family: 'Poppins', sans-serif; 
+            color: #ffffff; 
+            overflow: hidden; 
+            background: #000;
         }
+
+        /* Background Image */
+        .bg-image {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1565552643952-2591603d6d53?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover; background-position: center; z-index: -2;
+        }
+        .bg-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.9) 100%);
+            z-index: -1;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .container {
+            display: flex; flex-direction: column; justify-content: space-between;
+            height: 100vh; padding: 2vh 3vw;
+        }
+
+        /* Header / Top Bar */
         .header {
-            background: linear-gradient(135deg, var(--hijau-tua), var(--hijau-cerah));
-            color: white; padding: 35px 20px; text-align: center;
-            border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: grid; grid-template-columns: 1fr 2fr 1fr; align-items: center;
+            padding: 1.5rem 2rem; gap: 20px;
         }
-        .header h1 { margin: 0; font-size: 24px; }
-        .header p { margin: 5px 0 0; font-size: 14px; opacity: 0.9; }
+        .header .clock-box { font-size: 5vw; font-weight: 800; line-height: 1; text-align: left; letter-spacing: 2px; }
+        .header .masjid-info { text-align: center; }
+        .header .masjid-info h1 { font-size: 3vw; font-weight: 700; color: var(--primary-gold); margin-bottom: 5px; text-transform: uppercase; }
+        .header .masjid-info p { font-size: 1.2vw; font-weight: 400; letter-spacing: 1px; color: #ddd; }
+        .header .date-box { text-align: right; line-height: 1.4; }
+        .header .date-box .masehi { font-size: 1.6vw; font-weight: 600; }
+        .header .date-box .hijri { font-size: 1.4vw; font-weight: 400; color: var(--primary-gold); }
 
-        .container { padding: 20px; }
-        .card {
-            background: white; border-radius: 20px; padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px;
+        /* Middle Area - Countdown */
+        .middle-area { flex-grow: 1; display: flex; align-items: flex-end; padding-bottom: 2vh; }
+        .countdown-box {
+            display: inline-block; padding: 10px 25px; border-radius: 30px;
+            font-size: 1.5vw; font-weight: 600; letter-spacing: 1px;
+            background: rgba(0,0,0,0.6); border: 1px solid var(--primary-gold); color: white;
         }
+        .countdown-box span { color: var(--primary-gold); font-weight: 700; margin-left: 10px; }
 
-        /* Navigasi Bawah */
-        .bottom-nav {
-            position: fixed; bottom: 0; width: 100%; background: white;
-            display: flex; border-top: 1px solid #eee; height: 70px;
+        /* Bottom Area - Jadwal Salat */
+        .footer-area { display: flex; flex-direction: column; gap: 1.5vh; }
+        .prayer-row { display: flex; justify-content: space-between; padding: 10px; gap: 10px; }
+        .prayer-item {
+            flex: 1; text-align: center; padding: 1.5vh 0; border-radius: 10px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
         }
-        .nav-item {
-            flex: 1; display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            color: #888; text-decoration: none; font-size: 12px;
-            background: none; border: none; font-weight: bold;
-        }
-        .nav-item.active { color: var(--hijau-cerah); }
-        .nav-item span { font-size: 24px; margin-bottom: 4px; }
+        
+        .prayer-item h2 { font-size: 1.5vw; font-weight: 600; text-transform: uppercase; color: #fff; margin-bottom: 5px; letter-spacing: 1px; }
+        .prayer-item p { font-size: 3vw; font-weight: 800; letter-spacing: 1px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        
+        /* WARNA KHUSUS UNTUK SETIAP JADWAL SALAT */
+        #box-Imsak   { background: rgba(16, 185, 129, 0.6); border: 1px solid rgba(16, 185, 129, 0.8); } /* Hijau */
+        #box-Fajr    { background: rgba(59, 130, 246, 0.6); border: 1px solid rgba(59, 130, 246, 0.8); } /* Biru */
+        #box-Sunrise { background: rgba(6, 182, 212, 0.6);  border: 1px solid rgba(6, 182, 212, 0.8); }  /* Cyan / Tosca */
+        #box-Dhuhr   { background: rgba(245, 158, 11, 0.6); border: 1px solid rgba(245, 158, 11, 0.8); } /* Oranye */
+        #box-Asr     { background: rgba(139, 92, 246, 0.6); border: 1px solid rgba(139, 92, 246, 0.8); } /* Ungu */
+        #box-Maghrib { background: rgba(220, 38, 38, 0.6);  border: 1px solid rgba(220, 38, 38, 0.8); }  /* Merah */
+        #box-Isha    { background: rgba(67, 56, 202, 0.6);  border: 1px solid rgba(67, 56, 202, 0.8); }  /* Indigo / Biru Tua */
 
-        /* Halaman */
-        .page { display: none; }
-        .page.active { display: block; }
+        /* Highlight untuk waktu salat aktif/berikutnya */
+        .prayer-item.active { 
+            transform: scale(1.08); 
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+            border: 2px solid #ffffff !important;
+            z-index: 5;
+        }
+        .prayer-item.active h2 { color: var(--primary-gold); text-shadow: 0 0 10px rgba(0,0,0,0.8); }
+        .prayer-item.active p { color: #ffffff; text-shadow: 0 0 15px rgba(255, 255, 255, 0.8); }
 
-        /* Form */
-        label { display: block; font-weight: bold; margin-bottom: 8px; color: #444; }
-        input, select {
-            width: 100%; padding: 14px; margin-bottom: 20px;
-            border: 1px solid #ddd; border-radius: 12px; font-size: 16px;
-            box-sizing: border-box; background: #fff;
+        /* Running Text */
+        .marquee-box { padding: 12px 20px; font-size: 1.5vw; font-weight: 400; letter-spacing: 1px; }
+        
+        /* Layar Transisi Iqamah */
+        #iqamah-view {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, #1e293b 0%, #000000 100%);
+            display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 100;
         }
-        .btn-submit {
-            background: var(--hijau-cerah); color: white; width: 100%;
-            padding: 16px; border: none; border-radius: 12px;
-            font-size: 16px; font-weight: bold; box-shadow: 0 4px 10px rgba(46,125,50,0.3);
-        }
-        .btn-submit:disabled { background: #ccc; box-shadow: none; }
+        .iqamah-title { font-size: 4vw; color: var(--primary-gold); font-weight: 600; letter-spacing: 3px; }
+        .iqamah-prayer { font-size: 6vw; font-weight: 800; margin: 10px 0; text-transform: uppercase; }
+        .iqamah-timer { font-size: 18vw; font-weight: 800; color: #ef4444; line-height: 1; text-shadow: 0 0 30px rgba(239,68,68,0.5); }
 
-        /* QRIS */
-        .qris-container { text-align: center; }
-        .qris-img {
-            width: 100%; max-width: 280px; border: 8px solid #fff;
-            border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
+        #black-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: none; z-index: 200; }
     </style>
 </head>
 <body>
-
-    <div class="header">
-        <h1>Masjid Darussalam</h1>
-        <p>Absensi & Infaq Digital</p>
-    </div>
+    <div class="bg-image"></div>
+    <div class="bg-overlay"></div>
 
     <div class="container">
-        <div id="page-absen" class="page active">
-            <div class="card">
-                <h3 style="margin-top:0; color:var(--hijau-tua)">📝 Absensi Jama'ah</h3>
-                <form id="formAbsen">
-                    <label>Nama Lengkap</label>
-                    <input type="text" id="nama" placeholder="Ketik nama Anda..." required>
-                    
-                    <label>Tujuan / Kegiatan</label>
-                    <select id="tujuan" required>
-                        <option value="Sholat Berjamaah">Sholat Berjamaah</option>
-                        <option value="Kajian Rutin">Kajian Rutin</option>
-                        <option value="I'tikaf">I'tikaf</option>
-                        <option value="Ziarah">Ziarah</option>
-                        <option value="Lainnya">Lainnya</option>
-                    </select>
-                    
-                    <button type="submit" id="btnKirim" class="btn-submit">Kirim Kehadiran</button>
-                </form>
+        <!-- HEADER -->
+        <header class="header glass-panel">
+            <div class="clock-box" id="clock">00:00:00</div>
+            <div class="masjid-info">
+                <h1 id="masjid-name">Memuat Data...</h1>
+                <p>Kel. Kalibaru, Kec. Cilincing, Jakarta Utara</p>
             </div>
-        </div>
+            <div class="date-box">
+                <div class="masehi" id="date-masehi">Memuat...</div>
+                <div class="hijri" id="date-hijri">Memuat...</div>
+            </div>
+        </header>
 
-        <div id="page-qris" class="page">
-            <div class="card qris-container">
-                <h3 style="margin-top:0; color:var(--hijau-tua)">🕌 Infaq & Sedekah</h3>
-                <p style="font-size: 14px; color: #666; margin-bottom: 20px;">
-                    Mari berinfaq untuk kemakmuran Masjid Darussalam melalui QRIS di bawah ini.
-                </p>
-                
-                <img src="https://placehold.co/300x300/1b5e20/white?text=QRIS+Segera+Hadir" 
-                     alt="QRIS Masjid" class="qris-img">
-                
-                <p style="margin-top:20px; font-weight:bold; color:var(--hijau-tua)">DKM Masjid Darussalam</p>
+        <!-- TENGAH -->
+        <main class="middle-area">
+            <div class="countdown-box glass-panel">
+                Menuju <span id="next-prayer-name">Salat</span> <span id="countdown-timer">--:--:--</span>
             </div>
-        </div>
+        </main>
+
+        <!-- BAWAH -->
+        <footer class="footer-area">
+            <div class="prayer-row glass-panel">
+                <div class="prayer-item" id="box-Imsak"><h2>Imsak</h2><p id="time-Imsak">--:--</p></div>
+                <div class="prayer-item" id="box-Fajr"><h2>Subuh</h2><p id="time-Fajr">--:--</p></div>
+                <div class="prayer-item" id="box-Sunrise"><h2>Syuruq</h2><p id="time-Sunrise">--:--</p></div>
+                <div class="prayer-item" id="box-Dhuhr"><h2>Dzuhur</h2><p id="time-Dhuhr">--:--</p></div>
+                <div class="prayer-item" id="box-Asr"><h2>Ashar</h2><p id="time-Asr">--:--</p></div>
+                <div class="prayer-item" id="box-Maghrib"><h2>Maghrib</h2><p id="time-Maghrib">--:--</p></div>
+                <div class="prayer-item" id="box-Isha"><h2>Isya</h2><p id="time-Isha">--:--</p></div>
+            </div>
+            <div class="marquee-box glass-panel">
+                <marquee scrollamount="6">Luruskan dan rapatkan saf, karena lurus dan rapatnya saf termasuk kesempurnaan salat. Matikan alat komunikasi selama salat berlangsung.</marquee>
+            </div>
+        </footer>
     </div>
 
-    <div class="bottom-nav">
-        <button class="nav-item active" id="nav-absen" onclick="bukaTab('absen')">
-            <span>📝</span>Absen
-        </button>
-        <button class="nav-item" id="nav-qris" onclick="bukaTab('qris')">
-            <span>💰</span>Infaq QRIS
-        </button>
+    <!-- TAMPILAN IQAMAH & LAYAR GELAP -->
+    <div id="iqamah-view">
+        <div class="iqamah-title">WAKTU SALAT TELAH TIBA</div>
+        <div class="iqamah-prayer" id="iqamah-prayer-name">SUBUH</div>
+        <div class="iqamah-timer" id="iqamah-timer-text">00:00</div>
     </div>
+    <div id="black-screen"></div>
+    <audio id="alarm-audio" src="alarm.mp3" preload="auto"></audio>
 
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbyT9CmTEtkXR7-5iwNPZ8kCth6ciPU-2lka8gJ4U0kbxZFNcRpRtVKunFZq2-HEMISq3g/exec'; 
+        let settings = { durasi_iqamah: 5, durasi_gelap: 3 };
+        let currentStatus = 'NORMAL';
+        let prayerTimes = {};
+        let activePrayer = '';
 
-        const form = document.getElementById('formAbsen');
-        const btnKirim = document.getElementById('btnKirim');
+        const daysId = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        const monthsId = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
-        function bukaTab(tab) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            
-            document.getElementById('page-' + tab).classList.add('active');
-            document.getElementById('nav-' + tab).classList.add('active');
+        // 1. Ambil pengaturan dari GitHub
+        async function fetchSettings() {
+            try {
+                const res = await fetch('settings.json?t=' + new Date().getTime());
+                settings = await res.json();
+                document.getElementById('masjid-name').innerText = settings.nama_masjid || "Masjid Darussalam Al-Amin";
+            } catch (e) { console.log("Gagal baca settings"); }
         }
 
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-            btnKirim.disabled = true;
-            btnKirim.innerHTML = '⏳ Menyimpan...';
+        // 2. Ambil Jadwal Salat & Tanggal Hijriah
+        async function fetchPrayers() {
+            const date = new Date();
+            const url = `https://api.aladhan.com/v1/timings/${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}?latitude=-6.1054&longitude=106.9315&method=20`;
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+                prayerTimes = data.data.timings;
+                
+                ['Imsak', 'Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'].forEach(p => {
+                    if (document.getElementById(`time-${p}`)) {
+                        document.getElementById(`time-${p}`).innerText = prayerTimes[p];
+                    }
+                });
 
-            let dataInput = new FormData();
-            dataInput.append('Nama', document.getElementById('nama').value);
-            dataInput.append('Tujuan', document.getElementById('tujuan').value);
-            dataInput.append('Waktu', new Date().toLocaleString('id-ID'));
+                // Format Tanggal
+                const masehiText = `${daysId[date.getDay()]}, ${date.getDate()} ${monthsId[date.getMonth()]} ${date.getFullYear()}`;
+                document.getElementById('date-masehi').innerText = masehiText;
+                
+                const hijriData = data.data.date.hijri;
+                document.getElementById('date-hijri').innerText = `${hijriData.day} ${hijriData.month.en} ${hijriData.year} H`;
+            } catch (e) { console.log("Gagal fetch jadwal"); }
+        }
 
-            fetch(scriptURL, { method: 'POST', body: dataInput})
-            .then(response => {
-                alert('Alhamdulillah, kehadiran berhasil dicatat.');
-                form.reset();
-                btnKirim.disabled = false;
-                btnKirim.innerHTML = 'Kirim Kehadiran';
-            })
-            .catch(error => {
-                alert('Gagal mengirim. Periksa koneksi internet Anda.');
-                btnKirim.disabled = false;
-                btnKirim.innerHTML = 'Kirim Kehadiran';
+        // 3. Sistem Jam & Hitung Mundur
+        setInterval(() => {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const timeString = `${hours}:${minutes}`;
+            
+            document.getElementById('clock').innerText = `${hours}:${minutes}:${seconds}`;
+            
+            if (currentStatus === 'NORMAL' && Object.keys(prayerTimes).length > 0) {
+                checkAlarm(timeString);
+                updateCountdown(now);
+            }
+        }, 1000);
+
+        function updateCountdown(now) {
+            const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+            let nextPrayer = null;
+            let nextPrayerTimeObj = null;
+
+            for (let p of prayers) {
+                let [h, m] = prayerTimes[p].split(':');
+                let pTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), parseInt(h), parseInt(m), 0);
+                if (pTime > now) {
+                    nextPrayer = p;
+                    nextPrayerTimeObj = pTime;
+                    break;
+                }
+            }
+
+            // Jika semua sudah lewat, next adalah Subuh besok
+            if (!nextPrayer) {
+                nextPrayer = 'Fajr';
+                let [h, m] = prayerTimes['Fajr'].split(':');
+                nextPrayerTimeObj = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, parseInt(h), parseInt(m), 0);
+            }
+
+            // Highlight kotak jadwal
+            document.querySelectorAll('.prayer-item').forEach(el => el.classList.remove('active'));
+            if (document.getElementById(`box-${nextPrayer}`)) {
+                document.getElementById(`box-${nextPrayer}`).classList.add('active');
+            }
+
+            // Hitung selisih
+            let diff = Math.floor((nextPrayerTimeObj - now) / 1000);
+            let sH = String(Math.floor(diff / 3600)).padStart(2, '0');
+            let sM = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
+            let sS = String(diff % 60).padStart(2, '0');
+            
+            const pNames = { Fajr: 'Subuh', Dhuhr: 'Dzuhur', Asr: 'Ashar', Maghrib: 'Maghrib', Isha: 'Isya' };
+            document.getElementById('next-prayer-name').innerText = pNames[nextPrayer];
+            document.getElementById('countdown-timer').innerText = `-${sH}:${sM}:${sS}`;
+        }
+
+        function checkAlarm(currentTime) {
+            const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+            prayers.forEach(prayer => {
+                if (prayerTimes[prayer] === currentTime && !localStorage.getItem(`alarm_${prayer}_${new Date().getDate()}`)) {
+                    localStorage.setItem(`alarm_${prayer}_${new Date().getDate()}`, 'true');
+                    activePrayer = prayer;
+                    startProsesIqamah();
+                }
             });
-        });
+        }
+
+        function startProsesIqamah() {
+            currentStatus = 'ALARM';
+            document.getElementById('alarm-audio').play().catch(() => console.log("Klik layar 1x untuk audio"));
+            
+            const pNames = { Fajr: 'SUBUH', Dhuhr: 'DZUHUR', Asr: 'ASHAR', Maghrib: 'MAGHRIB', Isha: 'ISYA' };
+            document.getElementById('iqamah-prayer-name').innerText = pNames[activePrayer];
+
+            setTimeout(() => {
+                document.getElementById('alarm-audio').pause();
+                currentStatus = 'IQAMAH';
+                document.getElementById('iqamah-view').style.display = 'flex';
+                let timer = settings.durasi_iqamah * 60;
+                
+                let iqInterval = setInterval(() => {
+                    let m = Math.floor(timer / 60);
+                    let s = timer % 60;
+                    document.getElementById('iqamah-timer-text').innerText = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+                    timer--;
+                    
+                    if (timer < 0) {
+                        clearInterval(iqInterval);
+                        document.getElementById('iqamah-view').style.display = 'none';
+                        currentStatus = 'BLACKSCREEN';
+                        document.getElementById('black-screen').style.display = 'block';
+                        
+                        setTimeout(() => {
+                            document.getElementById('black-screen').style.display = 'none';
+                            currentStatus = 'NORMAL';
+                        }, settings.durasi_gelap * 60 * 1000);
+                    }
+                }, 1000);
+            }, 5000); // 5 detik alarm
+        }
+
+        fetchSettings();
+        fetchPrayers();
+        setInterval(fetchSettings, 60000); // Update setting tiap 1 menit
     </script>
 </body>
 </html>
-

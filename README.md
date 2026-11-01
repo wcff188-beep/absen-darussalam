@@ -1,2 +1,0 @@
-# absen-darussalam
-absen

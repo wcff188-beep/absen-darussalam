@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Controller</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f4; padding: 20px; }
+        .container { background: white; max-width: 400px; margin: auto; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        input, button { width: 100%; padding: 10px; margin: 10px 0; box-sizing: border-box; }
+        button { background: #28a745; color: white; border: none; cursor: pointer; font-weight: bold; }
+        #dashboard { display: none; }
+    </style>
+</head>
+<body>
+    <!-- Halaman Login -->
+    <div class="container" id="login-box">
+        <h2>Login Pengurus</h2>
+        <input type="text" id="login-username" placeholder="Username" required>
+        <input type="password" id="login-password" placeholder="Password" required>
+        <button onclick="login()">Masuk</button>
+    </div>
+
+    <!-- Halaman Dashboard (Tersembunyi sebelum login) -->
+    <div class="container" id="dashboard">
+        <h2>Pengaturan Masjid</h2>
+        <label>Nama Masjid</label>
+        <input type="text" id="input-nama">
+        
+        <label>Durasi Iqamah (Menit)</label>
+        <input type="number" id="input-iqamah">
+        
+        <label>Durasi Layar Gelap (Menit)</label>
+        <input type="number" id="input-gelap">
+        
+        <button onclick="simpanPengaturan()" id="btn-simpan">Simpan Perubahan</button>
+        <p style="font-size: 12px; color: red;">*Butuh waktu 1-2 menit untuk tampil di TV (Proses sinkronisasi GitHub).</p>
+    </div>
+
+    <script>
+        // === PENGATURAN KREDENSIAL DAN GITHUB ===
+        const CONFIG = {
+            adminUser: "Darussalam",
+            adminPass: "@darussalam-jakut",
+            
+            // ISI BAGIAN INI SEBELUM DI-UPLOAD KE GITHUB
+            ghUser: "USERNAME_GITHUB_ANDA", // Contoh: "roishalfiros"
+            ghRepo: "NAMA_REPO_ANDA",       // Contoh: "masjid-darussalam"
+            ghToken: "TOKEN_GITHUB_ANDA_DISINI" // Paste Token GitHub (PAT) di sini
+        };
+
+        let fileSha;
+
+        async function login() {
+            const u = document.getElementById('login-username').value;
+            const p = document.getElementById('login-password').value;
+
+            if (u === CONFIG.adminUser && p === CONFIG.adminPass) {
+                // Login berhasil, ambil data pengaturan dari GitHub
+                const url = `https://api.github.com/repos/${CONFIG.ghUser}/${CONFIG.ghRepo}/contents/settings.json`;
+                const res = await fetch(url, { headers: { "Authorization": `token ${CONFIG.ghToken}` } });
+                
+                if (res.ok) {
+                    const data = await res.json();
+                    fileSha = data.sha;
+                    
+                    const content = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+                    
+                    document.getElementById('input-nama').value = content.nama_masjid;
+                    document.getElementById('input-iqamah').value = content.durasi_iqamah;
+                    document.getElementById('input-gelap').value = content.durasi_gelap;
+                    
+                    document.getElementById('login-box').style.display = 'none';
+                    document.getElementById('dashboard').style.display = 'block';
+                } else {
+                    alert("Koneksi ke GitHub gagal. Pastikan Username, Repo, dan Token di dalam kode sudah benar!");
+                }
+            } else {
+                alert("Username atau Password salah!");
+            }
+        }
+
+        async function simpanPengaturan() {
+            const btn = document.getElementById('btn-simpan');
+            btn.innerText = "Menyimpan...";
+            
+            const newData = {
+                nama_masjid: document.getElementById('input-nama').value,
+                durasi_iqamah: parseInt(document.getElementById('input-iqamah').value),
+                durasi_gelap: parseInt(document.getElementById('input-gelap').value)
+            };
+
+            const encodedContent = btoa(unescape(encodeURIComponent(JSON.stringify(newData, null, 2))));
+            
+            const url = `https://api.github.com/repos/${CONFIG.ghUser}/${CONFIG.ghRepo}/contents/settings.json`;
+            const payload = {
+                message: "Update pengaturan masjid dari Web Admin",
+                content: encodedContent,
+                sha: fileSha
+            };
+
+            const res = await fetch(url, {
+                method: 'PUT',
+                headers: { "Authorization": `token ${CONFIG.ghToken}`, "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                fileSha = data.content.sha; // Update SHA untuk pengeditan berikutnya
+                alert("Berhasil disimpan! Tampilan TV akan otomatis update dalam 1-2 menit.");
+            } else {
+                alert("Gagal menyimpan ke sistem.");
+            }
+            btn.innerText = "Simpan Perubahan";
+        }
+    </script>
+</body>
+</html>
